@@ -1,0 +1,30 @@
+# config/moveit_params.yaml
+# MoveIt2 and pick & place motion parameters
+
+robot:
+  arm_group:    fr3_arm       # MoveIt2 planning group name
+  eef_link:     fr3_hand_tcp  # end-effector link (TCP between fingers)
+  base_frame:   world
+
+motion:
+  # Hover height above block before descending to grasp (meters)
+  pre_grasp_offset_z: 0.15
+
+  # Planning
+  planning_time:    5.0     # max seconds MoveIt2 spends planning
+  max_velocity:     0.3     # fraction of joint max velocity (0.0 - 1.0)
+  max_acceleration: 0.3     # fraction of joint max acceleration
+
+  # Home joint positions (robot arm up, clear of table)
+  home_joints: [0.0, -0.785, 0.0, -2.356, 0.0, 1.571, 0.785]
+
+place:
+  # Fixed drop position — center of red mat on table
+  x:  0.30
+  y: -0.25
+  z:  0.90   # hover height, robot lowers to z=block+0.06 before releasing
+
+gripper:
+  open_position:  0.08   # meters — fully open (8cm)
+  close_position: 0.05   # meters — match block width (5cm)
+  max_effort:     60.0   # Newtons

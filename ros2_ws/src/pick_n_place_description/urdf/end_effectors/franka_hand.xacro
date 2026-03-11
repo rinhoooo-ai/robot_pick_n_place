@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+  end_effectors/franka_hand.xacro
+  Franka Hand gripper — attaches to fr3_flange.
+  
+  Usage (include in top-level xacro):
+    <xacro:include filename="$(find pick_n_place_description)/urdf/end_effectors/franka_hand.xacro"/>
+    <xacro:franka_hand parent="fr3_flange"/>
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Include official Franka Hand from franka_description -->
+  <xacro:include filename="$(find franka_description)/end_effectors/franka_hand/franka_hand.urdf.xacro"/>
+
+  <xacro:macro name="franka_hand" params="parent:='fr3_flange'">
+
+    <!-- Mount gripper onto arm flange -->
+    <xacro:franka_hand
+      arm_id="fr3"
+      rpy="0 0 0"
+      gazebo="$(arg use_sim)"
+    />
+
+    <!-- TCP (Tool Center Point) — tip between the two fingers -->
+    <link name="fr3_hand_tcp"/>
+    <joint name="fr3_hand_tcp_joint" type="fixed">
+      <parent link="fr3_hand"/>
+      <child  link="fr3_hand_tcp"/>
+      <!-- 10.3cm from hand base to fingertip midpoint -->
+      <origin xyz="0 0 0.1034" rpy="0 0 0"/>
+    </joint>
+
+  </xacro:macro>
+
+</robot>

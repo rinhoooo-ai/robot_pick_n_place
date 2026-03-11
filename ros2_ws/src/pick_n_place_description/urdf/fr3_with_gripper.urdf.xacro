@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!--
+  fr3_with_gripper.urdf.xacro
+  Top-level assembly file — includes all parts.
+
+  Structure:
+    robots/        fr3_base.urdf.xacro       — FR3 arm + world joint
+    end_effectors/ franka_hand.xacro         — Franka Hand gripper + TCP
+    sensors/       rgbd_camera.xacro         — Overhead RGB-D camera
+    config/        joint_limits.yaml         — Joint limit overrides
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="fr3_pick_place">
+
+  <xacro:arg name="use_sim" default="true"/>
+
+  <!-- 1. Robot arm -->
+  <xacro:include filename="$(find pick_n_place_description)/urdf/robots/fr3_base.urdf.xacro"/>
+
+  <!-- 2. End effector -->
+  <xacro:include filename="$(find pick_n_place_description)/urdf/end_effectors/franka_hand.xacro"/>
+  <xacro:franka_hand parent="fr3_flange"/>
+
+  <!-- 3. Sensor -->
+  <xacro:include filename="$(find pick_n_place_description)/urdf/sensors/rgbd_camera.xacro"/>
+  <xacro:rgbd_camera parent="world" x="0.5" y="0.0" z="1.5"/>
+
+</robot>

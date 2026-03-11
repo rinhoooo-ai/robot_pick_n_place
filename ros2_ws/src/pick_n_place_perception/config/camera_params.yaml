@@ -1,0 +1,28 @@
+# config/camera_params.yaml
+# Camera and HSV detection parameters for block_detector node
+# Tune HSV ranges here if block colors aren't detected correctly
+
+camera:
+  rgb_topic:   /camera/color/image_raw
+  depth_topic: /camera/depth/image_raw
+  info_topic:  /camera/color/camera_info
+  debug_topic: /camera/debug_image      # publish detection overlay
+
+detection:
+  min_contour_area: 500   # pixels² — increase to filter more noise
+
+  # HSV color ranges — [H, S, V]
+  # Tip: run `ros2 run pick_n_place_perception block_detector` and view
+  # /camera/debug_image in RViz to tune these values
+  hsv_ranges:
+    red:
+      - lower: [0,   100, 100]
+        upper: [10,  255, 255]
+      - lower: [160, 100, 100]   # red wraps around H=180
+        upper: [180, 255, 255]
+    green:
+      - lower: [40,  80, 80]
+        upper: [80, 255, 255]
+    blue:
+      - lower: [100, 80, 80]
+        upper: [140, 255, 255]

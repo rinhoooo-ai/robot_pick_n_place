@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<!--
+  pick_place_world.sdf
+  World for Franka FR3 Pick and Place simulation.
+  Contains: ground plane, table, light sources, boundary walls.
+  Blocks are spawned separately via spawn_blocks.launch.py
+-->
+<sdf version="1.9">
+  <world name="pick_place_world">
+
+    <!-- ═══════════════════════════════════
+         PHYSICS
+    ═══════════════════════════════════ -->
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <!-- ═══════════════════════════════════
+         PLUGINS
+    ═══════════════════════════════════ -->
+    <plugin filename="gz-sim-physics-system"       name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-sensors-system"       name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-user-commands-system"     name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-contact-system"           name="gz::sim::systems::Contact"/>
+
+    <!-- ═══════════════════════════════════
+         LIGHTING
+    ═══════════════════════════════════ -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.9 0.9 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <!-- Ambient fill light -->
+    <light type="point" name="ambient_light">
+      <pose>0 0 3 0 0 0</pose>
+      <diffuse>0.4 0.4 0.4 1</diffuse>
+      <specular>0 0 0 1</specular>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+    </light>
+
+    <!-- ═══════════════════════════════════
+         GROUND PLANE
+    ═══════════════════════════════════ -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.4 0.4 0.4 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ═══════════════════════════════════
+         TABLE
+         80cm tall, 1.2m x 0.8m top
+         Robot base is at z=0.8 (table height)
+    ═══════════════════════════════════ -->
+    <model name="table">
+      <static>true</static>
+      <pose>0 0 0 0 0 0</pose>
+      <link name="table_top">
+        <pose>0 0 0.79 0 0 0</pose>
+        <collision name="collision">
+          <geometry><box><size>1.2 0.8 0.02</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>1.2 0.8 0.02</size></box></geometry>
+          <material>
+            <ambient>0.6 0.4 0.2 1</ambient>
+            <diffuse>0.7 0.5 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+      <!-- Table legs -->
+      <link name="leg_fl"><pose>-0.55 0.35 0.4 0 0 0</pose>
+        <collision name="c"><geometry><cylinder><radius>0.025</radius><length>0.8</length></cylinder></geometry></collision>
+        <visual    name="v"><geometry><cylinder><radius>0.025</radius><length>0.8</length></cylinder></geometry></visual>
+      </link>
+      <link name="leg_fr"><pose> 0.55 0.35 0.4 0 0 0</pose>
+        <collision name="c"><geometry><cylinder><radius>0.025</radius><length>0.8</length></cylinder></geometry></collision>
+        <visual    name="v"><geometry><cylinder><radius>0.025</radius><length>0.8</length></cylinder></geometry></visual>
+      </link>
+      <link name="leg_bl"><pose>-0.55 -0.35 0.4 0 0 0</pose>
+        <collision name="c"><geometry><cylinder><radius>0.025</radius><length>0.8</length></cylinder></geometry></collision>
+        <visual    name="v"><geometry><cylinder><radius>0.025</radius><length>0.8</length></cylinder></geometry></visual>
+      </link>
+      <link name="leg_br"><pose> 0.55 -0.35 0.4 0 0 0</pose>
+        <collision name="c"><geometry><cylinder><radius>0.025</radius><length>0.8</length></cylinder></geometry></collision>
+        <visual    name="v"><geometry><cylinder><radius>0.025</radius><length>0.8</length></cylinder></geometry></visual>
+      </link>
+    </model>
+
+    <!-- ═══════════════════════════════════
+         PICK ZONE MARKER (green mat)
+         Where blocks start — left side of table
+    ═══════════════════════════════════ -->
+    <model name="pick_zone_marker">
+      <static>true</static>
+      <pose>0.3 0.1 0.802 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.3 0.3 0.002</size></box></geometry>
+          <material><ambient>0.0 0.6 0.0 0.5</ambient><diffuse>0.0 0.8 0.0 0.5</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ═══════════════════════════════════
+         PLACE ZONE MARKER (red mat)
+         Where blocks go — right side of table
+    ═══════════════════════════════════ -->
+    <model name="place_zone_marker">
+      <static>true</static>
+      <pose>0.3 -0.25 0.802 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.3 0.3 0.002</size></box></geometry>
+          <material><ambient>0.6 0.0 0.0 0.5</ambient><diffuse>0.8 0.0 0.0 0.5</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>
